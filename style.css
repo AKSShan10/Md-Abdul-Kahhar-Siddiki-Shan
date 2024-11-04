@@ -1,0 +1,100 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+header,
+.background-color {
+  background-color: #111a28;
+}
+
+/* .navbar:hover {
+  background-color: rgba(255, 255, 255, 0.186);
+} */
+
+.green-text {
+  color: #01bf58;
+}
+.green-background {
+  background-color: #01bf58;
+}
+
+.dot {
+  height: 8px;
+  width: 8px;
+  background-color: #01bf58;
+  border-radius: 50%;
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+.button {
+  width: 140px;
+  height: 60px;
+  padding: 10px 15px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #ffffff;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.contact-btn {
+  background-color: #111a28;
+  border: 2px solid #01bf58;
+}
+
+.link-hover {
+  color: white;
+  font-size: 19px;
+  font-weight: 600;
+  margin-left: ;
+}
+
+.link-hover:hover {
+  color: #01bf58;
+}
+
+.highlight {
+  color: #5cc7f2;
+}
+
+.card-background {
+  background-color: #01bf5652;
+}
+
+/* responsive  */
+@media screen and (max-width: 450px) {
+  .header-flex {
+    display: ;
+    flex-direction: column;
+  }
+  /* .hide-nav1 {
+    display: none;
+  } */
+  .expertise {
+    flex-direction: column;
+  }
+  .nav-and-icon {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+}
+
+/* @media (450px < width <= 2000px) {
+  .hide-nav2 {
+    display: none;
+  }
+} */
