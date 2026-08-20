@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_USER = '<DOCKERHUB_USER>'
+        IMAGE_NAME     = 'portfolio-website'
+        IMAGE_REPO     = "${DOCKERHUB_USER}/${IMAGE_NAME}"
+    }
+
+    options {
+        timeout(time: 15, unit: 'MINUTES')
+        disableConcurrentBuilds()
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+                sh 'ls -la'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh "docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} ."
+            }
+        }
+
+        stage('Tag') {
+            steps {
+                sh """
+                    docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${IMAGE_REPO}:${BUILD_NUMBER}
+                    docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${IMAGE_REPO}:latest
+                """
+            }
+        }
+
+        stage('Docker Hub Login') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DH_USER',
+                    passwordVariable: 'DH_TOKEN')]) {
+                    sh 'echo "$DH_TOKEN" | docker login -u "$DH_USER" --password-stdin'
+                }
+            }
+        }
+
+        stage('Push') {
+            steps {
+                sh """
+                    docker push ${IMAGE_REPO}:${BUILD_NUMBER}
+                    docker push ${IMAGE_REPO}:latest
+                """
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout || true'
+            cleanWs()
+        }
+        success {
+            echo "Published ${IMAGE_REPO}:${BUILD_NUMBER} and :latest"
+            echo "Deployment is manual and is NOT performed by this pipeline."
+        }
+    }
+}
