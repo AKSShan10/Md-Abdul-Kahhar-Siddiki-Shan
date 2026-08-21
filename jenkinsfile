@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_USER = '<DOCKERHUB_USER>'
-        IMAGE_NAME     = 'portfolio-website'
-        IMAGE_REPO     = "${DOCKERHUB_USER}/${IMAGE_NAME}"
+        IMAGE_NAME = 'portfolio-website'
+        IMAGE_REPO = 'aksshan/portfolio-website'
     }
 
     options {
@@ -18,6 +17,7 @@ pipeline {
             steps {
                 checkout scm
                 sh 'ls -la'
+                echo "Checked out commit ${env.GIT_COMMIT}"
             }
         }
 
@@ -32,6 +32,7 @@ pipeline {
                 sh """
                     docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${IMAGE_REPO}:${BUILD_NUMBER}
                     docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${IMAGE_REPO}:latest
+                    docker images | grep ${IMAGE_NAME}
                 """
             }
         }
@@ -60,11 +61,14 @@ pipeline {
     post {
         always {
             sh 'docker logout || true'
-            cleanWs()
+            // cleanWs() was removed here so your pipeline doesn't crash
         }
         success {
             echo "Published ${IMAGE_REPO}:${BUILD_NUMBER} and :latest"
             echo "Deployment is manual and is NOT performed by this pipeline."
+        }
+        failure {
+            echo "Pipeline failed. No image was published."
         }
     }
 }
